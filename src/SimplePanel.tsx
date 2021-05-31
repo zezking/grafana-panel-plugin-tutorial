@@ -6,10 +6,14 @@ import { stylesFactory, useTheme } from '@grafana/ui';
 
 interface Props extends PanelProps<SimpleOptions> {}
 
+
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) => {
   const theme = useTheme();
   const styles = getStyles();
   let color: string;
+
+
+
 
   switch (options.color) {
     case 'red':
@@ -22,6 +26,11 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) =
       color = theme.palette.blue95;
       break;
   }
+
+  const radil=data.series.map(series=>series.fields.find(field =>field.type ==="number")).map(field =>field?.values.get(field.values.length-1))
+
+  console.log(radil);
+
   return (
     <div
       className={cx(
@@ -38,10 +47,15 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) =
         height={height}
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
-        viewBox={`-${width / 2} -${height / 2} ${width} ${height}`}
+        viewBox={`0 -${height / 2} ${width} ${height}`}
       >
-        <g>
-          <circle style={{ fill: color }} r={100} />
+        <g fill={color}>
+          {
+            radil.map((radius, index)=>{
+              const step=width/radil.length;
+              return <circle r={radius} transform={`translate(${index*step + step/2}, 0)`} />
+            })
+          }
         </g>
       </svg>
 
